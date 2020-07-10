@@ -28,11 +28,13 @@ import com.aventstack.extentreports.reporter.configuration.Theme;
 
 public class Kommunicate_Test 
 {
-	ExtentHtmlReporter htmlRep;
+	ExtentHtmlReporter htmlRep=new ExtentHtmlReporter("./reports/extent_report.html");
+	String rep_path=htmlRep.getFilePath();
 	ExtentReports extntRep;
 	ExtentTest exTest;
 	MultiPartEmail em=new MultiPartEmail();
 	EmailAttachment at=new EmailAttachment();
+	String scrnfile;
 	int cnt;
 	String chatTag,faqTag;
 	WebDriver dr;
@@ -40,7 +42,6 @@ public class Kommunicate_Test
 	@BeforeClass
 	public void report()
 	{
-		htmlRep=new ExtentHtmlReporter("./reports/extent_report.html");
 		htmlRep.config().setEncoding("utf-8");
 		htmlRep.config().setDocumentTitle("Report");
 		htmlRep.config().setTheme(Theme.STANDARD);
@@ -119,7 +120,9 @@ public class Kommunicate_Test
 		{
 			TakesScreenshot ts=(TakesScreenshot)dr;
 			File src= ts.getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(src, new File("./Screenshot/FailedTest.png"));	
+			File sfile= new File("./Screenshot/FailedTest.png");
+			FileUtils.copyFile(src,sfile);	
+			scrnfile=sfile.getPath();	
 		}
 
 		dr.quit();
@@ -128,8 +131,8 @@ public class Kommunicate_Test
 	@AfterClass
 	public void sendMessage() throws Exception  
 	{
-		String file= "C:\\Users\\Swathi Bhat\\git\\Kommunicate_Test\\Kommunicate_Test\\Screenshot\\FailedTest.png"; 
-		String rfile="C:\\Users\\Swathi Bhat\\git\\Kommunicate_Test\\Kommunicate_Test\\reports\\extent_report.html";
+		String file= scrnfile; 
+		String rfile=rep_path;
 		
 		MailSender.mail(em);
 		if(cnt<20)
